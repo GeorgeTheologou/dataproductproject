@@ -6,20 +6,20 @@ library(plotly)
 
 ui <- fluidPage(
   
-  titlePanel("Interactive airport map"),
+  titlePanel("World airports"),
   
   sidebarLayout(
-    
+    position = "right",
     sidebarPanel(
-      
-      sliderInput("slider1", label = h3("Define the number of airlines range"), min = 450, max = 1500, value = c(600, 850)),
-      sliderInput("slider2", label = h3("Number of markers"), min = 1000, max = 10000, value = 5000),
-      checkboxGroupInput("checkGroup", label = h3("Airline checkbox"), 
-                         choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
-                         selected = 1),
-      actionButton("recalc", "Apply selections"),
+      p("A number of airlines can flying from each airport. If you click at an airport sign, a popup box will appear showing the airport name and the number of airlines flying from that airport."),
       br(),
-      p("All the code can be found in this github ", a("repository.", href = "https://github.com/spymark/data_products_proj"))
+      p("You can filter for airports that have specific volume range of airlines by applying the following filter."),
+      sliderInput("slider1", label = h5("Filter volume of airlines"), min = 450, max = 1500, value = c(600, 850)),
+      actionButton("recalc", "Perform calculation"),
+      br(),
+      br(),
+      p("Project's github", a("repo", href = "TBC")),
+      p("The data was downloaded from", a("OpenFlights.org", href = "http://openflights.org/data.html"))
 
           ),
     
