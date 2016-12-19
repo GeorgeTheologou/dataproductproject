@@ -3,6 +3,7 @@ library(leaflet)
 library(tidyverse)
 library(plotly)
 
+df <- read_csv("../data/processed/airlinesbyairport.csv")  
 
 server <- function(input, output, session) {
 
@@ -11,27 +12,39 @@ server <- function(input, output, session) {
     iconWidth = 22, iconHeight = 22,
     iconAnchorX = 22, iconAnchorY = 22
     )
-  
-  n <- eventReactive(input$recalc, {
-    input$slider2
-  })
 
-  df <- read_csv("../data/processed/airlinesbyairport.csv")  
-  airportnames <- df%>%mutate(labels=paste(airportname))%>%select(labels)
-  airlines <- df%>%mutate(labels=paste(count))%>%select(labels)
-  
-  df <- df%>%select(latitude,longitude)
-
-  price <- eventReactive(input$recalc, {
-        
-        (round(runif(input$slider2, min = input$slider1[1], max = input$slider1[2] ), digits = 2))
+  filtered_df <- eventReactive(input$filter, {
+    min = input$slider1[1]
+    max = input$slider1[2]
+    df <- df%>%filter(count >= min & count <= max)
+    df <- df%>%select(latitude,longitude)
   }, ignoreNULL = FALSE)
+ 
+  airportnames <- eventReactive(input$filter, {
+    min = input$slider1[1]
+    max = input$slider1[2]
+    df <- df%>%filter(count >= min & count <= max)
+    airportnames <- df%>%mutate(labels=paste(airportname))%>%select(labels)
+    airportnames$labels
+  }, ignoreNULL = FALSE)
+  
+  airlines <- eventReactive(input$filter, {
+    min = input$slider1[1]
+    max = input$slider1[2]
+    df <- df%>%filter(count >= min & count <= max)
+    airlines <- df%>%mutate(labels=paste(count))%>%select(labels)
+    airlines$labels
+  }, ignoreNULL = FALSE)
+  
+  #airportnames <- df%>%mutate(labels=paste(airportname))%>%select(labels)
+  #airlines <- df%>%mutate(labels=paste(count))%>%select(labels)
 
   output$mymap <- renderLeaflet({
     leaflet() %>%
       addProviderTiles( "OpenStreetMap.HOT",options = providerTileOptions(noWrap = TRUE)) %>%
-      addMarkers(data = df, clusterOptions = markerClusterOptions(), icon = greenLeafIcon,
-                 popup = paste("<strong>Airport name: </strong>","<br>",as.character(airportnames$labels),"<br>","<hr>", "<em>Airlines flying: </em>","<br>","<em>",as.character(airlines$labels),"</em>"))
+      addMarkers(data = filtered_df(), clusterOptions = markerClusterOptions(), icon = greenLeafIcon,
+                 popup = paste("<strong>Airport name: </strong>","<br>",as.character(airportnames()),"<br>","<hr>", "<em>Airlines flying: </em>","<br>","<em>",as.character(airlines()),"</em>")
+                 )
 
     
   })
