@@ -3,8 +3,9 @@ library(leaflet)
 library(tidyverse)
 library(plotly)
 
-df <- read_csv("../data/processed/airlinesbyairport.csv")  
-
+#df <- read_csv("../data/processed/airlinesbyairport.csv")  
+df <- read_csv("airlinesbyairport.csv")  
+print(getwd())
 server <- function(input, output, session) {
 
   greenLeafIcon <- makeIcon(

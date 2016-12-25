@@ -27,6 +27,7 @@ The airport database contains 6977 airports spanning the globe, as shown in the 
 These two files were then joined to create the dataset used for this App.
 
 Data sets link: http://openflights.org/data.html
+
 Note: The current data might not be 100% accurate.
 
 ## World airports Map
@@ -70,9 +71,9 @@ addMarkers(data = filtered_df, clusterOptions = markerClusterOptions(), icon = g
 
 ## Appendix
 
-Shiny app: 
+Shiny app: https://georgeaueb.shinyapps.io/reactive_map/
 
-Github Repo: 
+Github Repo: https://github.com/GeorgeTheologou/dataproductproject
 
-Rpub presentation:
+Rpub presentation: http://rpubs.com/georgeaueb/237473
 
