@@ -1,0 +1,78 @@
+World airports Map
+========================================================
+author: George Theologou
+date: "December 23, 2016"
+output: ioslides_presentation
+
+What is this application?
+========================================================
+This application is for locating airports and identifying how many airlines fly from each airport. Two data sets were downloaded from OpenFlights.org. 
+
+**1. Route database**
+
+The route database contains 59036 routes between 3209 airports on 5.
+
+**2. Airport database**
+
+The airport database contains 6977 airports spanning the globe, as shown in the map above.
+
+These two files were then joined to create the dataset used for this App.
+
+Data sets link: http://openflights.org/data.html
+Note: The current data might not be 100% accurate.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r}
+library(webshot)
+library(leaflet)
+library(tidyverse)
+
+df <- read_csv("../data/processed/airlinesbyairport.csv")  
+print (df)
+min = 1
+max = 900
+filtered_df <- df%>%filter(count >= min & count <= max)
+filtered_df <- filtered_df%>%select(latitude,longitude)
+
+greenLeafIcon <- makeIcon(
+  iconUrl = "http://seeklogo.com/images/D/departure-flights-airport-sign-logo-A9A341DA0F-seeklogo.com.gif",
+  iconWidth = 22, iconHeight = 22,
+  iconAnchorX = 22, iconAnchorY = 22
+  )
+
+airportnames <- df%>%mutate(labels=paste(airportname))%>%select(labels)
+airlines <- df%>%mutate(labels=paste(count))%>%select(labels)
+
+leaflet() %>%
+addProviderTiles( "OpenStreetMap.HOT",options = providerTileOptions(noWrap = TRUE)) %>%
+addMarkers(data = filtered_df, clusterOptions = markerClusterOptions(), icon = greenLeafIcon,popup = paste("<strong>Airport name: </strong>","<br>",as.character(airportnames$labels),"<br>","<hr>", "<em>Airlines flying: </em>","<br>","<em>",as.character(airlines$labels),"</em>")
+)
+
+
+```
+
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+

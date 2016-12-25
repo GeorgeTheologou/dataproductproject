@@ -21,36 +21,33 @@ From ggplot2 to plotly (example)
 ========================================================
 
 
-```r
-library(tidyverse);library(plotly)
-p <- ggplot(data = diamonds) + 
-  geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+```
+# A tibble: 2,304 × 1
+   labels
+    <chr>
+1       7
+2      10
+3       5
+4       2
+5       3
+6       1
+7       5
+8       8
+9      25
+10      8
+# ... with 2,294 more rows
 ```
 
 
 ```r
-ggplotly(p)
+my_map <- leaflet() %>%
+addProviderTiles( "OpenStreetMap.HOT",options = providerTileOptions(noWrap = TRUE)) %>%
+addMarkers(data = filtered_df, clusterOptions = markerClusterOptions(), icon = greenLeafIcon,popup = paste("<strong>Airport name: </strong>","<br>",as.character(airportnames$labels),"<br>","<hr>", "<em>Airlines flying: </em>","<br>","<em>",as.character(airlines$labels),"</em>"))
 ```
 
-![plot of chunk unnamed-chunk-3](pitch-figure/unnamed-chunk-3-1.png)
-
-Using shiny, leaflet and plotly together
-========================================================
-
-- Shiny hosts the control widgets 
-
-- Leaflet uses data interacting with Shiny's control widgets to generate the map
-
-- plotly visualises the output of the interactions converting a ggplot2 object to an interactive visualisation
 
 
-Conclusion and links
-========================================================
-Thanks for having a look! 
 
-- You can see the app in action here:
-https://spymark.shinyapps.io/reactive_leaflet/
-
-- Here is the link to the github repo that contains all the code
-https://github.com/spymark/data_products_proj
-
+```
+Error in file(con, "rb") : cannot open the connection
+```

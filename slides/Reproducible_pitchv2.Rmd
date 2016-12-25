@@ -1,0 +1,78 @@
+---
+title: "World airports Map"
+author: "George"
+date: "December 25, 2016"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(plotly)
+```
+
+## What is this application?
+
+This application is for locating airports and identifying how many airlines fly from each airport. Two data sets were downloaded from OpenFlights.org. 
+
+**1. Route database**
+
+The route database contains 59036 routes between 3209 airports on 5.
+
+**2. Airport database**
+
+The airport database contains 6977 airports spanning the globe, as shown in the map above.
+
+These two files were then joined to create the dataset used for this App.
+
+Data sets link: http://openflights.org/data.html
+Note: The current data might not be 100% accurate.
+
+## World airports Map
+
+```{r, echo=FALSE, message=FALSE}
+library(webshot)
+library(leaflet)
+library(tidyverse)
+
+df <- read_csv("../data/processed/airlinesbyairport.csv")  
+min = 1
+max = 900
+filtered_df <- df%>%filter(count >= min & count <= max)
+filtered_df <- filtered_df%>%select(latitude,longitude)
+
+greenLeafIcon <- makeIcon(
+  iconUrl = "http://seeklogo.com/images/D/departure-flights-airport-sign-logo-A9A341DA0F-seeklogo.com.gif",
+  iconWidth = 22, iconHeight = 22,
+  iconAnchorX = 22, iconAnchorY = 22
+  )
+
+airportnames <- df%>%mutate(labels=paste(airportname))%>%select(labels)
+airlines <- df%>%mutate(labels=paste(count))%>%select(labels)
+```
+
+```{r, echo=TRUE}
+leaflet() %>%
+addProviderTiles( "OpenStreetMap.HOT",options = providerTileOptions(noWrap = TRUE)) %>%
+addMarkers(data = filtered_df, clusterOptions = markerClusterOptions(), icon = greenLeafIcon,
+           popup = paste("<strong>Airport name: </strong>","<br>",as.character(airportnames$labels),"<br>","<hr>", 
+                         "<em>Airlines flying: </em>","<br>","<em>",
+                         as.character(airlines$labels),"</em>")
+)
+```
+
+## Functionality
+
+- Navigate through the map, zoom in/out and click on clusters of airports
+- Get the number of airlines on a selected airports
+- Filter on airports with a range of volume of airlines
+
+## Appendix
+
+Shiny app: 
+
+Github Repo: 
+
+Rpub presentation:
+

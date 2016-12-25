@@ -20,18 +20,36 @@ What can you do in the app?
 From ggplot2 to plotly (example)
 ========================================================
 
-```{r, message= FALSE}
-library(tidyverse);library(plotly)
-p <- ggplot(data = diamonds) + 
-  geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+```{r, message= FALSE, echo=FALSE}
+library(webshot)
+library(leaflet)
+library(tidyverse)
+
+df <- read_csv("../data/processed/airlinesbyairport.csv")  
+min = 1
+max = 900
+filtered_df <- df%>%filter(count >= min & count <= max)
+filtered_df <- filtered_df%>%select(latitude,longitude)
+
+greenLeafIcon <- makeIcon(
+  iconUrl = "http://seeklogo.com/images/D/departure-flights-airport-sign-logo-A9A341DA0F-seeklogo.com.gif",
+  iconWidth = 22, iconHeight = 22,
+  iconAnchorX = 22, iconAnchorY = 22
+  )
+
+airportnames <- df%>%mutate(labels=paste(airportname))%>%select(labels)
+airlines <- df%>%mutate(labels=paste(count))%>%select(labels)
+print(airlines)
 ```
 
-```{r, eval=FALSE}
-ggplotly(p)
+```{r, eval=TRUE}
+my_map <- leaflet() %>%
+addProviderTiles( "OpenStreetMap.HOT",options = providerTileOptions(noWrap = TRUE)) %>%
+addMarkers(data = filtered_df, clusterOptions = markerClusterOptions(), icon = greenLeafIcon,popup = paste("<strong>Airport name: </strong>","<br>",as.character(airportnames$labels),"<br>","<hr>", "<em>Airlines flying: </em>","<br>","<em>",as.character(airlines$labels),"</em>"))
 ```
 
 ```{r, echo=FALSE}
-p
+my_map
 ```
 
 Using shiny, leaflet and plotly together

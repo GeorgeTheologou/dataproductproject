@@ -36,17 +36,12 @@ server <- function(input, output, session) {
     airlines$labels
   }, ignoreNULL = FALSE)
   
-  #airportnames <- df%>%mutate(labels=paste(airportname))%>%select(labels)
-  #airlines <- df%>%mutate(labels=paste(count))%>%select(labels)
-
   output$mymap <- renderLeaflet({
     leaflet() %>%
       addProviderTiles( "OpenStreetMap.HOT",options = providerTileOptions(noWrap = TRUE)) %>%
       addMarkers(data = filtered_df(), clusterOptions = markerClusterOptions(), icon = greenLeafIcon,
                  popup = paste("<strong>Airport name: </strong>","<br>",as.character(airportnames()),"<br>","<hr>", "<em>Airlines flying: </em>","<br>","<em>",as.character(airlines()),"</em>")
                  )
-
-    
   })
   
 
